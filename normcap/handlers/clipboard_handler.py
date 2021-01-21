@@ -25,8 +25,9 @@ class ClipboardHandler(AbstractHandler):
         self._logger.info("Copying to clipboard...")
 
         # supress output triggered somewhere in pypeclip
-        with contextlib.redirect_stdout(io.StringIO()):
-            pyperclip.copy(request.transformed)
+        # with contextlib.redirect_stdout(io.StringIO()):
+        #     pyperclip.copy(request.transformed)
+        print(request.transformed)
 
         if self._next_handler:
             return super().handle(request)
