@@ -76,6 +76,22 @@ def create_argparser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-p", "--path", type=str, default=None, help="set a path for storing images"
     )
+
+    parser.add_argument(
+        "--left"
+    )
+
+    parser.add_argument(
+        "--upper"
+    )
+
+    parser.add_argument(
+        "--right"
+    )
+
+    parser.add_argument(
+        "--bottom"
+    )
     return parser
 
 
@@ -148,7 +164,7 @@ def main(test_data: NormcapData = None):
 
     # Define Handlers
     capture = CaptureHandler()
-    crop = CropHandler()
+    crop = CropHandler(int(args['left']), int(args['upper']), int(args['right']), int(args['bottom']))
     enhance_img = EnhanceImgHandler()
     store = StoreHandler()
     ocr = OcrHandler()
@@ -163,8 +179,8 @@ def main(test_data: NormcapData = None):
            .set_next(store) \
            .set_next(ocr) \
            .set_next(magics) \
-           .set_next(clipboard) \
-           .set_next(notification)
+           .set_next(clipboard)
+        #    .set_next(notification)
     # fmt: on
 
     # Run chain
