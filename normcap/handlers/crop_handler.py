@@ -19,6 +19,13 @@ from normcap.handlers.abstract_handler import AbstractHandler
 
 
 class CropHandler(AbstractHandler):
+    def __init__(self, left, upper, right, lower):
+        self.left = left
+        self.upper = upper
+        self.right = right
+        self.lower = lower
+        self._logger = logging.getLogger(self.__class__.__name__)
+
     def handle(self, request: NormcapData) -> NormcapData:
         """Show GUI to select region and return selected image.
 
@@ -31,7 +38,8 @@ class CropHandler(AbstractHandler):
         """
         if not request.test_mode:
             self._logger.info("Starting GUI for area selection...")
-            request = self._select_region_with_gui(request)
+            request = self._select_region(request)
+            # request = self._select_region_with_gui(request)
         else:
             self._logger.info("Test mode. Skipping gui selection...")
 
@@ -42,6 +50,39 @@ class CropHandler(AbstractHandler):
 
         if self._next_handler:
             return super().handle(request)
+
+        return request
+
+
+    def _select_region(self, request: NormcapData) -> NormcapData:
+        """Show window(s) with screenshots and select region.
+
+        Arguments:
+            request {NormcapData} -- NormCap's session data
+
+        Returns:
+            dict -- Selected region {"bottom": <int>,
+                                     "top": <int>,
+                                     "left": <int>,
+                                     "right": <int>,
+                                     "monitor": <int>,
+                                     "mode": <int>}
+        """
+        # Create dummy window plus one for every monitor
+        # root = _RootWindow(request.cli_args, request.platform)
+        # for shot in request.shots:
+            # _CropWindow(root, shot)
+        # root.mainloop()
+
+        # Store result in request class
+        # result = root.props.crop_result
+
+        request.bottom = self.lower
+        request.top = self.upper
+        request.left = self.left
+        request.right = self.right
+        request.monitor = 0
+        request.mode = 'parse'
 
         return request
 
@@ -67,6 +108,7 @@ class CropHandler(AbstractHandler):
 
         # Store result in request class
         result = root.props.crop_result
+        print(result)
         if result:
             request.bottom = result["lower"]
             request.top = result["upper"]
